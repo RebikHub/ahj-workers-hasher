@@ -1,70 +1,71 @@
+import cryptoGraph from './crypto';
+
 export default class Hasher {
   constructor() {
     this.dnd = document.querySelector('.dnd');
     this.dndInput = document.querySelector('.dnd-input');
+    this.choiceAlgor = document.querySelector('.choice-algor');
+    this.listAlgor = document.querySelector('.list-algors');
+    this.algor = 'MD5';
   }
 
   events() {
-    this.renderImages();
-    this.dndInput.addEventListener('input', this.dndClick.bind(this));
+    this.clickOnAlgorithms();
+    this.inputFile();
+    this.clickChoiceAlgorithms();
   }
 
-  sendImage() {
-    const formData = new FormData();
-
-    if (this.img.file) {
-      formData.append('file', this.img.file);
-      formData.append('name', this.img.name);
-      formData.append('url', this.img.url);
-      this.memory.save(formData);
-    } else {
-      formData.append('name', this.img.name);
-      formData.append('url', this.img.url);
-      this.memory.save(formData);
-    }
-    this.update = false;
-    this.img.url = null;
-    this.img.name = null;
-    this.img.file = null;
+  inputFile() {
+    this.dndInput.addEventListener('input', (ev) => {
+      const file = ev.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = Hasher.fileToArrayBuffer(e.target.result);
+        cryptoGraph(buffer, this.algor);
+      };
+      reader.readAsText(file);
+    });
   }
 
-  addBlockWithImg(url, name, file) {
-    if (url) {
-      const image = document.createElement('img');
-      image.src = url;
-      image.alt = name;
-      this.img.url = url;
-      this.img.name = name;
-      this.img.file = file;
-
-      image.onerror = () => this.verifyUrl();
-      image.onload = () => this.addImage(image);
+  static fileToArrayBuffer(object) {
+    const data = JSON.stringify(object);
+    const buffer = new ArrayBuffer(data.length);
+    const bufferView = new Uint8Array(buffer);
+    for (let i = 0; i < data.length; i += 1) {
+      bufferView[i] = data.charCodeAt(i);
     }
-    this.inputName.value = null;
-    this.inputSrc.value = null;
-    this.textName = null;
-    this.textSrc = null;
+
+    const bufferArray = new Uint8Array(buffer);
+    // console.log(ArrayBuffer.isView(bufferArray));
+    return bufferArray;
+    // return JSON.parse(String.fromCharCode(...bufferArray));
   }
 
-  addImage(image) {
-    const divImg = document.createElement('div');
-    const span = document.createElement('span');
-    divImg.classList.add('image');
-    span.classList.add('close-image');
-    divImg.appendChild(image);
-    divImg.appendChild(span);
-    this.imgsList.appendChild(divImg);
-    if (this.update) {
-      this.sendImage();
-    }
-    this.removeImage();
+  clickOnAlgorithms() {
+    this.choiceAlgor.addEventListener('click', () => {
+      if (this.listAlgor.classList.contains('none')) {
+        this.listAlgor.classList.remove('none');
+      } else {
+        this.listAlgor.classList.add('none');
+      }
+    });
+  }
+
+  clickChoiceAlgorithms() {
+    this.listAlgor.addEventListener('click', (ev) => {
+      for (const i of document.querySelectorAll('.algor-name')) {
+        if (ev.target === i) {
+          this.algor = ev.target.textContent.trim();
+          this.listAlgor.classList.add('none');
+        }
+      }
+      console.log(this.algor);
+    });
   }
 
   dndClick(ev) {
     const files = Array.from(ev.currentTarget.files);
     const url = URL.createObjectURL(files[0]);
-    this.update = true;
-    this.addBlockWithImg(url, files[0].name, files[0]);
   }
 
   drop() {
