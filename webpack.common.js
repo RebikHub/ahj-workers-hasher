@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   target: 'web',
@@ -10,6 +11,12 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /web-worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+        },
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -57,6 +64,10 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
     }),
   ],
 };
