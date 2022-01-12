@@ -1,0 +1,42 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    color: #999;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.dnd{
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    height: 120px;
+    color: black;
+    text-align: center;
+    padding-top: 80px;
+    border: 1px solid #999;
+    border-radius: 30px;
+}
+
+.dnd-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    width: 100%;
+}
+
+.none {
+    display: none;
+}
