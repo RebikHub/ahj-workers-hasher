@@ -79,11 +79,15 @@ body {
 }
 
 .hash {
+    display: flex;
     margin: 20px auto auto auto;
+    flex-direction: column;
 }
 
 .hash > h5 {
     font-weight: 100;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .none {
