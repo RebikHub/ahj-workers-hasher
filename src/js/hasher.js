@@ -6,7 +6,7 @@ export default class Hasher {
     this.choiceAlgor = document.querySelector('.choice-algor');
     this.listAlgor = document.querySelector('.list-algors');
     this.hashText = document.querySelector('.hash-calc-result');
-    this.algor = 'MD5';
+    this.algor = null;
     this.hash = null;
     this.file = null;
   }
@@ -51,6 +51,7 @@ export default class Hasher {
       file,
       algor,
     });
+
   }
 
   resultCalcHash() {
