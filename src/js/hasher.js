@@ -51,7 +51,6 @@ export default class Hasher {
       file,
       algor,
     });
-
   }
 
   resultCalcHash() {
