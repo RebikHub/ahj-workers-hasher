@@ -25,14 +25,11 @@ function readFile(file, algor) {
   reader.onload = (e) => {
     const buffer = fileToArrayBuffer(e.target.result);
     const hash = cryptoGraph(buffer, algor);
+    self.postMessage(hash);
   };
   reader.readAsText(file);
 }
 
 self.addEventListener('message', (ev) => {
-  console.log(ev.data);
-  self.postMessage(readFile(ev.data.file, ev.data.algor));
+  readFile(ev.data.file, ev.data.algor);
 });
-
-// self.postMessage(cryptoGraph(fileToArrayBuffer(object), algor));
-

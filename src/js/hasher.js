@@ -1,8 +1,6 @@
-// import cryptoGraph from './crypto';
-// import Worker from './web.worker';
-
 export default class Hasher {
-  constructor() {
+  constructor(worker) {
+    this.worker = worker;
     this.dnd = document.querySelector('.dnd');
     this.dndInput = document.querySelector('.dnd-input');
     this.choiceAlgor = document.querySelector('.choice-algor');
@@ -18,14 +16,13 @@ export default class Hasher {
     this.inputFile();
     this.dropFile();
     this.clickChoiceAlgorithms();
-    // Hasher.webWorker();
   }
 
   inputFile() {
     this.dndInput.addEventListener('input', (ev) => {
       const file = ev.target.files[0];
       this.file = file;
-      // this.readFile(file);
+      this.resultCalcHash();
     });
   }
 
@@ -37,48 +34,30 @@ export default class Hasher {
       ev.preventDefault();
       const files = Array.from(ev.dataTransfer.files);
       [this.file] = files;
-      // this.readFile(files[0]);
+      this.resultCalcHash();
     });
   }
-  
-  static webWorker(file, algor) {
-    const worker = new Worker(new URL('./web.worker.js', import.meta.url));
-    worker.addEventListener('message', (ev) => {
+
+  webWorker(file, algor) {
+    this.worker.addEventListener('message', (ev) => {
+      this.renderCalcHash(ev.data);
+    });
+
+    this.worker.addEventListener('error', (ev) => {
       console.log(ev);
     });
 
-    worker.addEventListener('error', (ev) => {
-      console.log(ev);
-    });
-
-    worker.postMessage({
+    this.worker.postMessage({
       file,
       algor,
     });
   }
 
-  // readFile(file) {
-  //   const reader = new FileReader();
-  //   reader.onload = (e) => {
-  //     const buffer = Hasher.fileToArrayBuffer(e.target.result);
-  //     this.hash = cryptoGraph(buffer, this.algor);
-  //     this.renderCalcHash(this.hash);
-  //   };
-  //   reader.readAsText(file);
-  // }
-
-  // static fileToArrayBuffer(object) {
-  //   const data = JSON.stringify(object);
-  //   const buffer = new ArrayBuffer(data.length);
-  //   const bufferView = new Uint8Array(buffer);
-
-  //   for (let i = 0; i < data.length; i += 1) {
-  //     bufferView[i] = data.charCodeAt(i);
-  //   }
-
-  //   const bufferArray = new Uint8Array(buffer);
-  //   return bufferArray;
-  // }
+  resultCalcHash() {
+    if (this.file !== null && this.algor !== null) {
+      this.webWorker(this.file, this.algor);
+    }
+  }
 
   renderCalcHash(hash) {
     this.hashText.textContent = hash;
@@ -105,7 +84,7 @@ export default class Hasher {
           this.algor = ev.target.textContent.trim();
           this.listAlgor.classList.add('none');
           this.renderChangeAlgor(this.algor);
-          Hasher.webWorker(this.file, this.algor);
+          this.resultCalcHash();
         }
       }
     });
