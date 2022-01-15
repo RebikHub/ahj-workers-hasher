@@ -1,5 +1,5 @@
 import Hasher from './hasher';
-import Worker from './web.worker.js';
+import Worker from './web.worker';
 
 console.log('app started');
 const worker = new Worker();
