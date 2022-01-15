@@ -2,7 +2,7 @@
   "name": "ahj-workers-hasher",
   "version": "1.0.0",
   "description": "",
-  "main": "webpack.common.js",
+  "main": "webpack.config.js",
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
