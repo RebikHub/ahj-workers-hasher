@@ -24,7 +24,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /web-worker\.js$/,
+        test: /\.worker\.js$/,
         use: {
           loader: 'worker-loader',
         },
@@ -62,8 +62,5 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-    }),
   ],
 };
